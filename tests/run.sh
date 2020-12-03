@@ -15,14 +15,15 @@ if test "$CI" = true; then
   if test -n "$USECURL" && echo "$USECURL" |grep -q gssapi; then
     :
   else
-    extra_attrs="$extra_attrs",\!gssapi
+    extra_attrs="$extra_attrs or gssapi"
   fi
   if test -n "$USECURL" && echo "$USECURL" |grep -q libssh2; then
     :
   else
-    extra_attrs="$extra_attrs",\!ssh
+    extra_attrs="$extra_attrs or ssh"
   fi
 fi
 
 $PYTHON -c 'import pycurl; print(pycurl.version)'
-$PYTEST
+$PYTEST -m "not (standalone $extra_attrs)"
+$PYTEST -m standalone
